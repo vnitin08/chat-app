@@ -4,7 +4,7 @@ import generateTokenAndSetCookie from "../utils/generateToken.js";
 
 export const signup = async(req, res) => {
     try {
-        const { firstName, lastName, username, password, confirmPassword } = req.body;
+        const { fullName, username, password, confirmPassword } = req.body;
         
         if (password !== confirmPassword) {
             return res.status(400).json({ error: "Passwords do not match" });
@@ -20,12 +20,11 @@ export const signup = async(req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const profilePic = `https://avatar.iran.liara.run/username?username=${firstName}+${lastName}`;
+        const profilePic = `https://avatar.iran.liara.run/username?username=${fullName}`;
         console.log(profilePic);
 
         const newUser = new User({
-            firstName,
-            lastName,
+            fullName,
             username,
             password: hashedPassword,
             profilePic: profilePic
@@ -38,7 +37,7 @@ export const signup = async(req, res) => {
 
             res.status(201).json({
                 _id: newUser._id,
-                fullName: newUser.firstName + " " + newUser.lastName,
+                fullName: newUser.fullName,
                 username: newUser.username,
                 profilePic: newUser.profilePic
             });
@@ -56,14 +55,14 @@ export const login = async(req, res) => {
     try {
         const { username, password } = req.body;
         const user = await User.findOne({username});
-        const validPassword = await bcrypt.compare(password, user.password);
+        const validPassword = await bcrypt.compare(password, user.password || "");
 
         if (user && validPassword) {
             generateTokenAndSetCookie(user._id, res);
 
             res.status(200).json({
                 _id: user._id,
-                fullName: user.firstName + " " + user.lastName,
+                fullName: user.fullName,
                 username: user.username,
                 profilePic: user.profilePic
             });
