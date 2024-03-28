@@ -14,7 +14,7 @@ const Login = () => {
     await login(username, password);
   }
   return (
-    <div className="flex flex-col items-center justify-center min-w-96 mx-auto border-lime-700">
+    <div className="flex flex-col items-center justify-center min-w-96 mx-auto  border-lime-700">
       <div className="w-full p-6 rounded-lg shadow-md bg-white-400 bg-clip-padding backdrop-filter border-lime-700">
         <h1 className="text-3xl font-bold text-center">
           Login
@@ -40,7 +40,7 @@ const Login = () => {
               <span className="text-base label-text">Password</span>
             </label>
             <input
-              type="text"
+              type="password"
               placeholder="Enter password"
               className="w-full input input-bordered h-10"
               value={password}
